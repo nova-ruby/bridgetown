@@ -1,0 +1,155 @@
+{
+  "identifier": "com.tommasonegri.Bridgetown",
+  "name": "Bridgetown",
+  "organization": "Tommaso Negri",
+  "description": "Bridgetown support for Nova editor.",
+  "version": "1.0",
+  "categories": [
+    "tasks",
+    "sidebars"
+  ],
+
+  "main": "main.js",
+
+  "activationEvents": [
+    "onLanguage:html+erb",
+    "onLanguage:ruby",
+    "onWorkspaceContains:*.rb",
+    "onWorkspaceContains:*.erb",
+    "onWorkspaceContains:bridgetown.config.yml"
+  ],
+
+  "entitlements": {
+    "filesystem": "readwrite",
+    "process": true
+  },
+
+  "taskTemplates": {
+    "bridgetown": {
+      "name": "Bridgetown",
+      "description": "Runs common Bridgetown commands.",
+      "persistent": true,
+      "image": "task-bridgetown",
+      "tasks": {
+        "build": {
+          "shell": true,
+          "command": "bin/bridgetown",
+          "args": [
+            "build",
+            "--source=$(Config:bridgetown.source-dir)",
+            "--destination=$(Config:bridgetown.destination-dir)",
+            "--plugins=$(Config:bridgetown.plugins-dir)",
+            "--environment=$(Config:bridgetown.env)"
+          ]
+        },
+        "run": {
+          "shell": true,
+          "command": "bin/bridgetown",
+          "args": [
+            "start",
+            "--source=$(Config:bridgetown.source-dir)",
+            "--destination=$(Config:bridgetown.destination-dir)",
+            "--plugins=$(Config:bridgetown.plugins-dir)",
+            "--environment=$(Config:bridgetown.env)"
+          ]
+        },
+        "clean": {
+          "shell": true,
+          "command": "bin/bridgetown",
+          "args": [
+            "clean"
+          ]
+        }
+      },
+      "config": [
+        {
+          "key": "bridgetown.env",
+          "title": "Environment",
+          "description": "Specifies the environment to run this server under",
+          "type": "enum",
+          "values": ["development", "test", "production"],
+          "default": "development",
+          "allowsCustom": true,
+          "required": true
+        },
+        {
+          "title": "Directories",
+          "type": "section",
+          "children": [
+            {
+              "key": "bridgetown.source-dir",
+              "title": "Source",
+              "type": "path",
+              "default": "src",
+              "required": true
+            },
+            {
+              "key": "bridgetown.destination-dir",
+              "title": "Destination",
+              "type": "path",
+              "default": "output",
+              "required": true
+            },
+            {
+              "key": "bridgetown.plugins-dir",
+              "title": "Plugins",
+              "type": "path",
+              "default": "plugins",
+              "required": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+
+  "sidebars": [
+    {
+      "id": "tommasonegri.bridgetown.sidebar",
+      "name": "Bridgetown",
+      "smallImage": "bridgetown",
+      "smallSelectedImage": "bridgetown",
+      "largeImage": "bridgetown",
+      "largeSelectedImage": "bridgetown",
+      "sections": [
+        {
+          "id": "tommasonegri.bridgetown.sidebar.notes",
+          "name": "Notes",
+          "allowMultiple": true,
+          "placeholderText": "There are no Bridgetown Notes in the current workspace.",
+          "placeholderImage": "bridgetown",
+          "headerCommands": [
+            {
+              "title": "Refresh",
+              "image": "__builtin.refresh",
+              "tooltip": "Refresh notes",
+              "command": "tommasonegri.bridgetown.commands.sidebar.notes.reload",
+              "when": "bridgetownDetected == null"
+            }
+          ],
+          "contextCommands": [
+            {
+              "title": "Remove",
+              "command": "mysidebar.remove",
+              "when": "viewItem != null"
+            },
+            {
+              "title": "Show in Finder",
+              "command": "mysidebar.showInFinder",
+              "when": "viewItem != null"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+
+  "commands": {
+    "command-palette": [
+      {
+        "title": "Reload Bridgetown Notes Sidebar",
+        "command": "tommasonegri.bridgetown.commands.sidebar.notes.reload"
+      }
+    ]
+  }
+}
