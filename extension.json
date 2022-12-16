@@ -16,10 +16,6 @@
     "onWorkspaceContains:bridgetown.config.yml"
   ],
 
-  "entitlements": {
-    "process": true
-  },
-
   "taskTemplates": {
     "bridgetown": {
       "name": "Bridgetown",
