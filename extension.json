@@ -1,13 +1,10 @@
 {
-  "identifier": "com.tommasonegri.Bridgetown",
+  "identifier": "com.tommasonegri.bridgetown",
   "name": "Bridgetown",
   "organization": "Tommaso Negri",
-  "description": "Bridgetown support for Nova editor.",
+  "description": "Task actions for Bridgetown",
   "version": "1.0",
-  "categories": [
-    "tasks",
-    "sidebars"
-  ],
+  "categories": [ "tasks" ],
 
   "main": "main.js",
 
@@ -20,56 +17,57 @@
   ],
 
   "entitlements": {
-    "filesystem": "readwrite",
     "process": true
   },
 
   "taskTemplates": {
     "bridgetown": {
       "name": "Bridgetown",
-      "description": "Runs common Bridgetown commands.",
+      "description": "Run Bridgetown dev, build and clean commands.",
       "persistent": true,
-      "image": "task-bridgetown",
+      "image": "task",
       "tasks": {
         "build": {
-          "shell": true,
-          "command": "bin/bridgetown",
-          "args": [
-            "build",
-            "--source=$(Config:bridgetown.source-dir)",
-            "--destination=$(Config:bridgetown.destination-dir)",
-            "--plugins=$(Config:bridgetown.plugins-dir)",
-            "--environment=$(Config:bridgetown.env)"
-          ]
+          "resolve": "bridgetown"
         },
         "run": {
-          "shell": true,
-          "command": "bin/bridgetown",
-          "args": [
-            "start",
-            "--source=$(Config:bridgetown.source-dir)",
-            "--destination=$(Config:bridgetown.destination-dir)",
-            "--plugins=$(Config:bridgetown.plugins-dir)",
-            "--environment=$(Config:bridgetown.env)"
-          ]
+          "resolve": "bridgetown"
         },
         "clean": {
-          "shell": true,
-          "command": "bin/bridgetown",
-          "args": [
-            "clean"
-          ]
+          "resolve": "bridgetown"
         }
       },
       "config": [
         {
-          "key": "bridgetown.env",
-          "title": "Environment",
-          "description": "Specifies the environment to run this server under",
+          "key": "url",
+          "type": "string",
+          "title": "URL",
+          "description": "Override the configured URL for the website."
+        },
+        {
+          "key": "basePath",
+          "type": "string",
+          "title": "Base Path",
+          "description": "Serve the website from the given base path."
+        },
+        {
+          "key": "future",
           "type": "enum",
-          "values": ["development", "test", "production"],
-          "default": "development",
-          "allowsCustom": true,
+          "title": "Future",
+          "description": "Render posts with a future date.",
+          "values": ["Inherit from config file", "Disabled", "Enabled"],
+          "default": "Inherit from config file",
+          "radio": false,
+          "required": true
+        },
+        {
+          "key": "unpublished",
+          "type": "enum",
+          "title": "Unpublished",
+          "description": "Render posts marked as unpublished.",
+          "values": ["Inherit from config file", "Disabled", "Enabled"],
+          "default": "Inherit from config file",
+          "radio": false,
           "required": true
         },
         {
@@ -77,79 +75,169 @@
           "type": "section",
           "children": [
             {
-              "key": "bridgetown.source-dir",
+              "key": "directories.root",
+              "type": "path",
+              "title": "Root",
+              "description": "Leave blank to inherit from config file. Bridgetown defaults to the current working directory.",
+              "allowFiles": false,
+              "allowFolders": true,
+              "relative": true
+            },
+            {
+              "key": "directories.source",
+              "type": "path",
               "title": "Source",
-              "type": "path",
-              "default": "src",
-              "required": true
+              "description": "Leave blank to inherit from config file. Bridgetown defaults to \"src\".",
+              "allowFiles": false,
+              "allowFolders": true,
+              "relative": true
             },
             {
-              "key": "bridgetown.destination-dir",
+              "key": "directories.destination",
+              "type": "path",
               "title": "Destination",
-              "type": "path",
-              "default": "output",
-              "required": true
+              "description": "Leave blank to inherit from config file. Bridgetown defaults to \"output\".",
+              "allowFiles": false,
+              "allowFolders": true,
+              "relative": true
             },
             {
-              "key": "bridgetown.plugins-dir",
-              "title": "Plugins",
+              "key": "directories.layouts",
               "type": "path",
-              "default": "plugins",
-              "required": true
+              "title": "Layouts",
+              "description": "Leave blank to inherit from config file. Bridgetown defaults to \"src/_layouts\".",
+              "allowFiles": false,
+              "allowFolders": true,
+              "relative": true
             }
           ]
-        }
-      ]
-    }
-  },
-
-  "sidebars": [
-    {
-      "id": "tommasonegri.bridgetown.sidebar",
-      "name": "Bridgetown",
-      "smallImage": "bridgetown",
-      "smallSelectedImage": "bridgetown",
-      "largeImage": "bridgetown",
-      "largeSelectedImage": "bridgetown",
-      "sections": [
+        },
         {
-          "id": "tommasonegri.bridgetown.sidebar.notes",
-          "name": "Notes",
-          "allowMultiple": true,
-          "placeholderText": "There are no Bridgetown Notes in the current workspace.",
-          "placeholderImage": "bridgetown",
-          "headerCommands": [
+          "title": "Advanced",
+          "type": "section",
+          "children": [
             {
-              "title": "Refresh",
-              "image": "__builtin.refresh",
-              "tooltip": "Refresh notes",
-              "command": "tommasonegri.bridgetown.commands.sidebar.notes.reload",
-              "when": "bridgetownDetected == null"
-            }
-          ],
-          "contextCommands": [
-            {
-              "title": "Remove",
-              "command": "mysidebar.remove",
-              "when": "viewItem != null"
+              "key": "advanced.environment",
+              "title": "Environment",
+              "description": "Specify the environment to use in the process.",
+              "type": "enum",
+              "values": ["development", "test", "production"],
+              "default": "development",
+              "allowsCustom": true,
+              "required": true
             },
             {
-              "title": "Show in Finder",
-              "command": "mysidebar.showInFinder",
-              "when": "viewItem != null"
+              "key": "advanced.configFiles",
+              "type": "pathArray",
+              "title": "Config Files",
+              "description": "Specify custom config files. Leave blank to default to \"bridgetown.config.yml\".",
+              "filetype": ["yml", "toml"],
+              "relative": true
+            },
+            {
+              "key": "advanced.bind",
+              "type": "string",
+              "title": "Bind To",
+              "description": "Bind Puma to the specified URI.",
+              "placeholder": "tcp://..."
+            },
+            {
+              "key": "advanced.skipFrontend",
+              "type": "boolean",
+              "title": "Skip Frontend",
+              "description": "Disable frontend bundling. Always \"true\" for the production environment.",
+              "default": false,
+              "required": true
+            },
+            {
+              "title": "Watch & Live-reload",
+              "type": "section",
+              "children": [
+                {
+                  "key": "advanced.watch.regeneration",
+                  "type": "boolean",
+                  "title": "Watch",
+                  "description": "Enable auto-regeneration of the site when files are modified.",
+                  "default": true,
+                  "required": true
+                },
+                {
+                  "key": "advanced.watch.liveReload",
+                  "type": "boolean",
+                  "title": "Live Reload",
+                  "description": "Enable live-reloading of the site when files are modified. Always \"false\" for the production environment.",
+                  "default": true,
+                  "required": true
+                },
+                {
+                  "key": "advanced.watch.trace",
+                  "type": "boolean",
+                  "title": "Trace",
+                  "description": "Show the full backtrace when an error occurs during watch mode.",
+                  "default": true,
+                  "required": true
+                },
+                {
+                  "key": "advanced.watch.forcePolling",
+                  "type": "enum",
+                  "title": "Force Polling",
+                  "description": "Force watch to use polling.",
+                  "values": ["Inherit from config file", "Disabled", "Enabled"],
+                  "default": "Inherit from config file",
+                  "radio": false,
+                  "required": true
+                },
+                {
+                  "key": "advanced.watch.disableDiskCache",
+                  "type": "enum",
+                  "title": "Disable Disk Cache",
+                  "description": "Disable caching to disk.",
+                  "values": ["Inherit from config file", "Disabled", "Enabled"],
+                  "default": "Inherit from config file",
+                  "radio": false,
+                  "required": true
+                }
+              ]
+            },
+            {
+              "title": "Console & Issues",
+              "type": "section",
+              "children": [
+                {
+                  "key": "advanced.console.output",
+                  "type": "enum",
+                  "title": "Console Output",
+                  "description": "Specify console log level.",
+                  "values": ["Standard", "Verbose", "Quiet"],
+                  "default": "Standard",
+                  "radio": false,
+                  "required": true
+                },
+                {
+                  "key": "advanced.console.liquidProfiler",
+                  "type": "enum",
+                  "title": "Liquid Profiler",
+                  "description": "Generate Liquid rendering profile.",
+                  "values": ["Inherit from config file", "Disabled", "Enabled"],
+                  "default": "Inherit from config file",
+                  "radio": false,
+                  "required": true
+                },
+                {
+                  "key": "advanced.console.strictFrontMatter",
+                  "type": "enum",
+                  "title": "Strict Front Matter",
+                  "description": "Cause build to fail if there is a YAML syntax error in a page's front matter.",
+                  "values": ["Inherit from config file", "Disabled", "Enabled"],
+                  "default": "Inherit from config file",
+                  "radio": false,
+                  "required": true
+                }
+              ]
             }
           ]
         }
       ]
     }
-  ],
-
-  "commands": {
-    "command-palette": [
-      {
-        "title": "Reload Bridgetown Notes Sidebar",
-        "command": "tommasonegri.bridgetown.commands.sidebar.notes.reload"
-      }
-    ]
   }
 }
