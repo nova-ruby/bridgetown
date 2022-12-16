@@ -3,4 +3,4 @@
 </p>
 <h1 align="center">Bridgetown for Nova</h1>
 
-Provide a Task for running [Bridgetown](https://www.bridgetownrb.com) `dev`, `build` and `clean` commands.
+This extension provides a Task that make it easy to build and run your [Bridgetown](https://www.bridgetownrb.com) project.
