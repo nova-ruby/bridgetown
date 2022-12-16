@@ -2,19 +2,18 @@
   "identifier": "com.tommasonegri.bridgetown",
   "name": "Bridgetown",
   "organization": "Tommaso Negri",
-  "description": "Task actions for Bridgetown",
+  "description": "Tools to help you build for Bridgetown",
   "version": "1.0",
+  "license": "MIT",
+
+  "repository": "https://github.com/nova-ruby/bridgetown",
+  "bugs": "https://github.com/nova-ruby/bridgetown/issues",
+  "funding": "https://www.paypal.com/paypalme/tommasonegri/25EUR",
+
   "categories": [ "tasks" ],
+  "keywords": [ "ruby", "bridgetown", "jekyll" ],
 
   "main": "main.js",
-
-  "activationEvents": [
-    "onLanguage:html+erb",
-    "onLanguage:ruby",
-    "onWorkspaceContains:*.rb",
-    "onWorkspaceContains:*.erb",
-    "onWorkspaceContains:bridgetown.config.yml"
-  ],
 
   "taskTemplates": {
     "bridgetown": {
